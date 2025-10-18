@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Hiệu ứng ảnh & chữ nổi</title>
+<style>
+  :root {
+    --bg: #000;
+  }
+  html,body {
+    height:100%;
+    margin:0;
+    background: var(--bg);
+    overflow:hidden;
+    font-family: "Segoe UI", Arial;
+  }
+  .stage {
+    position:relative;
+    width:100%;
+    height:100vh;
+    overflow:hidden;
+  }
+
+  /* chữ */
+  .bubble {
+    position:absolute;
+    white-space:nowrap;
+    pointer-events:none;
+    color:#fff;
+    text-shadow:0 0 10px #fff, 0 0 20px #ffb3ff;
+    opacity:0.9;
+  }
+  .bubble.small{font-size:14px;}
+  .bubble.mid{font-size:22px;}
+  .bubble.big{font-size:38px;font-weight:700;}
+
+  /* tim */
+  .heart {
+    position:absolute;
+    width:28px;
+    height:28px;
+    pointer-events:none;
+    background:red;
+    transform: rotate(45deg);
+    animation: floatHeart 10s ease-in infinite;
+  }
+  .heart::before,
+  .heart::after {
+    content:"";
+    position:absolute;
+    width:28px;
+    height:28px;
+    background:red;
+    border-radius:50%;
+  }
+  .heart::before {
+    top:-14px;
+    left:0;
+  }
+  .heart::after {
+    left:-14px;
+    top:0;
+  }
+
+  /* avatar */
+  .avatar {
+    position:absolute;
+    border-radius:15px;
+    object-fit:cover;
+    box-shadow:0 0 25px rgba(255,255,255,0.5);
+    pointer-events:none;
+    border:2px solid rgba(255,255,255,0.6);
+  }
+
+  @keyframes floatUp {
+    0% {
+      transform: translateY(110vh) scale(0.9);
+      opacity:0;
+    }
+    10% { opacity:1; }
+    100% {
+      transform: translateY(-20vh) scale(1);
+      opacity:0;
+    }
+  }
+  @keyframes floatHeart {
+    0% {
+      transform:translateY(110vh) rotate(45deg) scale(0.7);
+      opacity:0;
+    }
+    20%{opacity:1;}
+    100% {
+      transform:translateY(-20vh) rotate(45deg) scale(1.2);
+      opacity:0;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="stage" id="stage"></div>
+
+<script>
+const texts = [
+  "mừng 20 tháng 10",
+  "chúc mẹ luôn vui tươi",
+  "mong mẹ luôn hạnh phúc",
+  "cảm ơn mẹ đã lo cho con",
+  "con iu mẹ"
+];
+
+const avatars = [
+  "avatar1.jpg", // ảnh 1
+  "avatar2.jpg", // ảnh 2
+];
+
+const totalBubbles = 40;   // số chữ
+const totalHearts = 15;    // số tim
+const totalAvatars = 20;   // số ảnh
+
+const stage = document.getElementById("stage");
+function rand(min,max){return Math.random()*(max-min)+min;}
+function rInt(min,max){return Math.floor(rand(min,max+1));}
+
+// chữ
+for(let i=0;i<totalBubbles;i++){
+  const e=document.createElement("div");
+  e.className="bubble";
+  const size=Math.random();
+  if(size<0.5)e.classList.add("small");
+  else if(size<0.85)e.classList.add("mid");
+  else e.classList.add("big");
+  e.textContent=texts[rInt(0,texts.length-1)];
+  e.style.left=rand(0,95)+"vw";
+  e.style.animation=`floatUp ${rand(12,26).toFixed(1)}s linear ${rand(-10,5).toFixed(1)}s infinite`;
+  stage.appendChild(e);
+}
+
+// tim
+for(let i=0;i<totalHearts;i++){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.style.left=rand(5,95)+"vw";
+  h.style.animationDuration=rand(8,18).toFixed(1)+"s";
+  h.style.animationDelay=rand(-5,5).toFixed(1)+"s";
+  stage.appendChild(h);
+}
+
+// ảnh
+for(let i=0;i<totalAvatars;i++){
+  const a=document.createElement("img");
+  a.className="avatar";
+  a.src=avatars[rInt(0,avatars.length-1)];
+  const s=rand(90,130).toFixed(0);
+  a.style.width=s+"px";
+  a.style.height=s+"px";
+  a.style.left=rand(5,90)+"vw";
+  a.style.animation=`floatUp ${rand(14,28).toFixed(1)}s linear ${rand(-12,5).toFixed(1)}s infinite`;
+  stage.appendChild(a);
+}
+</script>
+</body>
+</html>
